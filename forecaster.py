@@ -66,9 +66,9 @@ class SolarForecastForecaster:
     def run(
         self,
         train_ratio: float = 0.8,
-        svr_kernel: str = 'rbf', svr_C: float = 1.0, svr_epsilon: float = 0.1,
+        svr_kernel: str = 'linear', svr_C: float = 1.0, svr_epsilon: float = 0.5,
         xgb_params: dict = None,
-        horizon_ratio: float = 0.1,
+        horizon_ratio: float = 0.01,
         freq: str = '15T'
     ):
         series = self.load_aggregated_series().dropna()
@@ -78,7 +78,7 @@ class SolarForecastForecaster:
         train_full = series.iloc[:split]
         test = series.iloc[split:]
 
-        xgb_params = xgb_params or {'n_estimators': 100, 'learning_rate': 0.1}
+        xgb_params = xgb_params or {'n_estimators': 300, 'learning_rate': 0.1, 'max_depth': 4}
         self.global_t0 = train_full.index[0]
 
         svr_window = max(int(len(train_full) * horizon_ratio), 1)
