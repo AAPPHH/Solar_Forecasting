@@ -1,18 +1,14 @@
 from pathlib import Path
 from playwright.sync_api import sync_playwright, TimeoutError
 
-
 cwd = Path.cwd()
-print(f"Aktuelles Arbeitsverzeichnis: {cwd}")
 
 plant_label   = "Kraftwerk Neurath"
 resolution_key = "quarterhour"
 filetype_key   = "text/csv"
 
-# tagesaktuelles Datum
-start_date = "01.05.2024"
-end_date   = "02.05.2024"
-
+start_date = "01.06.2024"
+end_date   = "02.06.2024"
 
 download_dir = cwd / "downloads"
 
@@ -24,6 +20,7 @@ RESOLUTION_LABEL = {
     "month":       "Auflösung: Monat",
     "year":        "Auflösung: Jahr",
 }
+
 FILETYPE_LABEL = {
     "text/csv": "CSV",
     "application/vnd.openxmlformats-officedocument.s": "XLSX",
@@ -60,14 +57,11 @@ with sync_playwright() as p:
 
     frm.click()
     frm.fill(start_date)
-    to.click()
-    to.fill(end_date)
-
     page.keyboard.press("Enter")
 
-    for btn in page.locator("button.applyBtn:has-text('Annehmen')").all():
-        if btn.is_visible():
-            btn.click()
+    to.click()
+    to.fill(end_date)
+    page.keyboard.press("Enter")
 
     with page.expect_download() as dl_info:
         page.locator("#help-powerplant-download").click()
